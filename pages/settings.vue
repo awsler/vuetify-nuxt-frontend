@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex text-xs-center>
-      Die vollständige EventList wird später hier angezeigt.
+      Einstellungen können später hier vorgenommen werden.
     </v-flex>
   </v-layout>
 </template>
