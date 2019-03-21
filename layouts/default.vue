@@ -10,7 +10,7 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container>
+      <v-container fill-height>
         <nuxt />
       </v-container>
     </v-content>
@@ -35,6 +35,12 @@
     </v-bottom-nav>
   </v-app>
 </template>
+
+<style>
+.dev_border {
+  border: #7f7f7f 1px dashed;
+}
+</style>
 
 <script>
 export default {
