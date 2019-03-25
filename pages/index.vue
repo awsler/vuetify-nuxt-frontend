@@ -4,19 +4,21 @@
       <div class="display-1">
         {{ currentWeekdayName }}
         <v-btn
-         fab
-         flat
-         absolute
-         style="right:4em;top:1ex"
-         @click="previousDay()">
+          fab
+          flat
+          absolute
+          style="right:4em;top:1ex"
+          @click="previousDay()"
+        >
           <v-icon>arrow_left</v-icon>
         </v-btn>
         <v-btn
-         fab
-         flat
-         absolute
-         style="right:0;top:1ex"
-         @click="nextDay()">
+          fab
+          flat
+          absolute
+          style="right:0;top:1ex"
+          @click="nextDay()"
+        >
           <v-icon>arrow_right</v-icon>
         </v-btn>
       </div>
@@ -24,33 +26,13 @@
         <div v-if="!event.sameTime" class="headline time-info">
           {{ event.startTimeString }} Uhr
         </div>
-        <v-card elevation="5" style="margin-bottom: 1em">
-          <v-card-title class="title">
-            {{ event.description }}
-          </v-card-title>
-          <div class="text-xs-left" style="padding-left:0.85em">
-            <v-chip color="green lighten-1" label>
-              <v-avatar>
-                <v-icon>room</v-icon>
-              </v-avatar>
-              {{ event.location }}
-            </v-chip>
-            <v-chip v-if="event.speaker!=null" label color="blue lighten-3">
-              <v-avatar>
-                <v-icon>person</v-icon>
-              </v-avatar>
-              {{ event.speaker }}
-            </v-chip>
-            <v-chip v-if="event.endTime!=null" label color="red lighten-2">
-              <v-avatar>
-                <v-icon>timelapse</v-icon>
-              </v-avatar>
-              {{ getDuration(event.startTime, event.endTime) }}
-              <v-icon>arrow_forward</v-icon>
-              {{ time2str(event.endTime) }} Uhr
-            </v-chip>
-          </div>
-        </v-card>
+        <event-list-item
+          :description="event.description"
+          :speaker="event.speaker"
+          :location="event.location"
+          :start-time="event.startTime"
+          :end-time="event.endTime"
+        />
       </div>
     </v-flex>
   </v-layout>
@@ -66,11 +48,17 @@
 </style>
 
 <script>
+import EventListItem from '@/components/EventListItem.vue'
+
 export default {
   name: 'Agenda',
+  components: {
+    EventListItem
+  },
   data() {
     return {
       selectedDate: null,
+      selectedEvent: null,
       rawEvents: [
         { speaker: null, description: 'Wanderung', location: 'Wald', startTime: new Date('2019-06-19T18:00:00+02:00'), endTime: new Date('2019-06-19T21:00:00+02:00') },
         { speaker: null, description: 'Party', location: 'Bar', startTime: new Date('2019-06-19T18:00:00+02:00'), endTime: null },
@@ -109,10 +97,7 @@ export default {
       }).forEach((event) => {
         const newEvent = { ...event }
         newEvent.sameTime = (lastEvent && event.startTime.getTime() === lastEvent.startTime.getTime())
-        newEvent.startTimeString = this.time2str(event.startTime)
-        if (event.endTime != null) {
-          newEvent.endTimeString = this.time2str(event.endTime)
-        }
+        newEvent.startTimeString = event.startTime.getHours() + ':' + ('0' + event.startTime.getMinutes()).slice(-2)
         result.push(newEvent)
         lastEvent = event
       })
@@ -145,9 +130,6 @@ export default {
     date2int(date) {
       return date.getFullYear() * 10000 + date.getMonth() * 100 + date.getDate()
     },
-    time2str(date) {
-      return date.getHours() + ':' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
-    },
     previousDay() {
       if (this.date2int(this.selectedDate) > this.date2int(this.firstDate)) {
         this.selectDate(new Date(this.selectedDate.getTime() - 86400000))
@@ -157,23 +139,6 @@ export default {
       if (this.date2int(this.selectedDate) < this.date2int(this.lastDate)) {
         this.selectDate(new Date(this.selectedDate.getTime() + 86400000))
       }
-    },
-    getDuration(startTime, endTime) {
-      const millis = endTime.getTime() - startTime.getTime()
-      if (millis < 0) {
-        return 'negative duration'
-      }
-      let minutes = Math.floor(millis / 60000)
-      const hours = Math.floor(minutes / 60)
-      minutes -= hours * 60
-      const result = []
-      if (hours > 0) {
-        result.push(hours + 'h')
-      }
-      if (minutes > 0 || result.length === 0) {
-        result.push(minutes + 'min')
-      }
-      return result.join(' ')
     }
   }
 }
