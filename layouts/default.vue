@@ -10,7 +10,7 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container fill-height>
+      <v-container fill-height style="background-color:#f0f0f0">
         <nuxt />
       </v-container>
     </v-content>
