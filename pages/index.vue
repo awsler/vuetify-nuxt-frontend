@@ -1,30 +1,47 @@
 <template>
   <v-layout v-touch="{ left() { nextDay() }, right() { previousDay() } }">
-    <v-flex text-xs-center>
-      <div class="weekday-info">
+    <v-flex>
+      <div class="display-1">
         {{ currentWeekdayName }}
-        <v-icon @click="previousDay()">
-          arrow_left
-        </v-icon>
-        <v-icon @click="nextDay()">
-          arrow_right
-        </v-icon>
+        <v-btn
+         fab
+         flat
+         absolute
+         style="right:4em;top:1ex"
+         @click="previousDay()">
+          <v-icon>arrow_left</v-icon>
+        </v-btn>
+        <v-btn
+         fab
+         flat
+         absolute
+         style="right:0;top:1ex"
+         @click="nextDay()">
+          <v-icon>arrow_right</v-icon>
+        </v-btn>
       </div>
       <div v-for="(event, i) in events" :key="i">
-        <div v-if="!event.sameTime" class="time-info">
+        <div v-if="!event.sameTime" class="headline time-info">
           {{ event.startTimeString }} Uhr
         </div>
         <v-card elevation="5" style="margin-bottom: 1em">
-          <v-card-title style="font-weight:bold">
+          <v-card-title class="title">
             {{ event.description }}
           </v-card-title>
-          <v-chip v-if="event.speaker!=null">
-            <v-icon>person</v-icon>
-            {{ event.speaker }}
-          </v-chip>
-          <v-chip color="green">
-            {{ event.location }}
-          </v-chip>
+          <div class="text-xs-left" style="padding-left:1ex">
+            <v-chip color="green lighten-1" label>
+              <v-avatar>
+                <v-icon>room</v-icon>
+              </v-avatar>
+              {{ event.location }}
+            </v-chip>
+            <v-chip v-if="event.speaker!=null" label color="blue lighten-3">
+              <v-avatar>
+                <v-icon>person</v-icon>
+              </v-avatar>
+              {{ event.speaker }}
+            </v-chip>
+          </div>
         </v-card>
       </div>
     </v-flex>
@@ -35,16 +52,8 @@
 .dev_border {
   border: #7f7f7f 1px dashed;
 }
-.weekday-info {
-  text-align: left;
-  font-size: 150%;
-  font-weight: bold;
-  padding: 0.1em 0.75em;
-}
 .time-info {
-  text-align: left;
-  font-size: 150%;
-  padding: 0.25em 0.75em;
+  padding: 0.25em 0;
 }
 </style>
 
